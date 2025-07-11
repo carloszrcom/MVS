@@ -1,15 +1,16 @@
 # User-specific files (NO versionar)
-*.xcodeproj/xcuserdata/*
-*.xcworkspace/xcuserdata/*
-*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+*/*.xcodeproj/xcuserdata/*
+*/*.xcworkspace/xcuserdata/*
+*/*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+*/*.xcodeproj/project.xcworkspace/xcuserdata/carloszr.xcuserdatad/UserInterfaceState.xcuserstate
 
 # Build/derived data (generados automáticamente)
-build/
-DerivedData/
+*/build/
+*/DerivedData/
 
 # Swift Package Manager (SPM)
-.swiftpm/
-.xcode/
+*/.swiftpm/
+*/.xcode/
 
 # Configuraciones locales (entornos, API keys)
 *.env
@@ -21,5 +22,5 @@ DerivedData/
 *.backup
 
 # Dependencias (CocoaPods, Carthage)
-Pods/
-Carthage/
+*/Pods/
+*/Carthage/
