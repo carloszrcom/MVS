@@ -24,3 +24,5 @@
 # Dependencias (CocoaPods, Carthage)
 */Pods/
 */Carthage/
+project.pbxproj
+contents.xcworkspacedata
