@@ -9,17 +9,21 @@ import Foundation
 import SwiftData
 
 @Observable
-class GameStore {
+final class GameStore {
     // MARK: - Properties
     private var modelContext: ModelContext
-    private var remote = GameRemoteDataSourceImpl()
+    private var remote: GameRemoteDataSourceImpl
     private var local: GameLocalDataSourceImpl
     
     // MARK: - Init
-    init(modelContext: ModelContext, remote: GameRemoteDataSourceImpl = GameRemoteDataSourceImpl()) {
+    init(modelContext: ModelContext, remote: GameRemoteDataSourceImpl, local: GameLocalDataSourceImpl) {
         self.modelContext = modelContext
         self.remote = remote
-        self.local = GameLocalDataSourceImpl(context: modelContext)
+        self.local = local
+    }
+ 
+    deinit {
+        print("--> Deinit de GameStore")
     }
     
     // MARK: - Functions
@@ -33,6 +37,10 @@ class GameStore {
         let remoteDTOs = try await remote.fetchAllGames()
         try await local.saveAllGames(remoteDTOs)
         return remoteDTOs.map(dtoToDomain)
+    }
+    
+    func deleteAllLocalGames() async {
+        try! await local.deleteAllGames()
     }
     
     // MARK: - Private functions

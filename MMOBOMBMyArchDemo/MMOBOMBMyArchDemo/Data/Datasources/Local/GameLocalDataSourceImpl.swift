@@ -9,14 +9,28 @@ import Foundation
 import SwiftData
 
 final class GameLocalDataSourceImpl {
-    /// IMPORTANT: The `ModelContext` passed here MUST come from a SwiftUI View using `@Environment(\.modelContext)`. Passing any other context will cause runtime errors.
+    // MARK: - Properties
+    /// IMPORTANT: The `ModelContext` passed here MUST come from a SwiftUI View using `@Environment(\.modelContext)`.
+    /// This class is designed to be instantiated once with that context and then injected as a single instance
+    /// throughout the app, for example:
+    /// `let localDataSource = GameLocalDataSourceImpl(context: context)`
+    /// and then passed to other components like `GameStore`.
     private let context: ModelContext
     
-    /// IMPORTANT: The `ModelContext` passed here MUST come from a SwiftUI View using `@Environment(\.modelContext)`. Passing any other context will cause runtime errors.
+    // MARK: - Init
+    /// IMPORTANT: The `ModelContext` passed here MUST come from a SwiftUI View using `@Environment(\.modelContext)`.
+    /// Instantiate a single instance of this class at app launch or in appropriate scope,
+    /// then inject it where needed.
     init(context: ModelContext) {
         self.context = context
     }
     
+    deinit {
+        print("--> Deinit de GameLocalDataSourceImpl")
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Functions
     func fetchAllGames() async throws -> [GameDTO] {
         let results = try context.fetch(FetchDescriptor<GameEntity>())
         return results.map {
@@ -48,6 +62,15 @@ final class GameLocalDataSourceImpl {
                                     releaseDate: dto.release_date ?? "",
                                     profileUrl: dto.profile_url ?? "")
             context.insert(entity)
+        }
+        try context.save()
+    }
+
+    func deleteAllGames() async throws {
+        let fetchDescriptor = FetchDescriptor<GameEntity>()
+        let games = try context.fetch(fetchDescriptor)
+        for game in games {
+            context.delete(game)
         }
         try context.save()
     }

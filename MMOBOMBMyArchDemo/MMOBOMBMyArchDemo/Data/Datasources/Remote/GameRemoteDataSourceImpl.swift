@@ -12,6 +12,11 @@ final class GameRemoteDataSourceImpl {
     private let url = URL(string: "https://www.mmobomb.com/api1/games")!
     private let session = URLSession.shared
 
+    deinit {
+        print("--> Deinit de GameRemoteDataSourceImpl")
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     // MARK: - Functions
     func fetchAllGames() async throws -> [GameDTO] {
         let (data, _) = try await session.data(from: url)

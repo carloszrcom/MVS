@@ -12,7 +12,9 @@ import SwiftData
 struct MMOBOMBMyArchDemoApp: App {
     // MARK: - Properties
     /// SwiftData container.
-    let container: ModelContainer
+    private let container: ModelContainer
+    private let remoteDataSource = GameRemoteDataSourceImpl()
+    @State private var gameStore: GameStore!
     
     // MARK: - Init
     init() {
@@ -27,6 +29,8 @@ struct MMOBOMBMyArchDemoApp: App {
                 allowsSave: true
             )
             container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            let localDataSource = GameLocalDataSourceImpl(context: container.mainContext)
+            self._gameStore = State(initialValue: GameStore(modelContext: container.mainContext, remote: remoteDataSource, local: localDataSource))
         } catch {
             fatalError(">> Could not initialize ModelContainer: \(error)")
         }
@@ -35,10 +39,10 @@ struct MMOBOMBMyArchDemoApp: App {
     // MARK: - Body
     var body: some Scene {
         WindowGroup {
-            GameListView()
-                .environment(GameStore(modelContext: container.mainContext))
+            MainTabView()
         }
         .modelContainer(container)
+        .environment(gameStore)
     }
 }
 

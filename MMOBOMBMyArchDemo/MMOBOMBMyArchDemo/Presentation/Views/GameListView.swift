@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct GameListView: View {
+    // MARK: - Properties
     @Environment(GameStore.self) private var gameStore
     @State private var games: [Game] = []
-    
 
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             List(games) { game in
@@ -30,32 +31,16 @@ struct GameListView: View {
                     print("❌ Failed to fetch games: \(error)")
                 }
             }
-            
-            
-//            Text("Test")
-//                .task {
-//                    do {
-//                        games = try await gameStore.getAllGames()
-//                        // Use games as needed
-//                    } catch {
-//                        print("Failed to fetch games: \(error)")
-//                    }
+            .onDisappear {
+//                Task {
+//                    await gameStore.deleteAllLocalGames()
 //                }
-            
-//            List(games) { game in
-//                NavigationLink(value: game) {
-//                    GameRow(game: game)
-//                }
-//            }
-//            .navigationTitle("Games")
-//            .task { await viewModel.loadGames() }
-//            .navigationDestination(for: Game.self) { game in
-//                GameDetailView(game: game)
-//            }
+            }
         }
     }
 }
 
+// MARK: - Preview
 #Preview {
     GameListView()
 }
